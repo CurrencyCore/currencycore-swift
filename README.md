@@ -7,10 +7,13 @@ Generated from the CurrencyCore OpenAPI 3.1 spec with
 [OpenAPI Generator](https://openapi-generator.tech) (`swift5`, async/await), plus
 a thin `CurrencyCore.configure(...)` helper for API-key and version handling.
 
+- **Website:** https://currency-core.com
+- **Documentation:** https://currency-core.com/docs
+
 ## Install (Swift Package Manager)
 
 ```swift
-.package(url: "https://github.com/CurrencyCore/currencycore-swift.git", from: "0.1.0")
+.package(url: "https://github.com/CurrencyCore/currencycore-swift.git", from: "0.1.2")
 ```
 
 Add `"CurrencyCoreSDK"` to your target's dependencies.
