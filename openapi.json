@@ -1,0 +1,2642 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CurrencyCore API",
+    "version": "v1",
+    "description": "Edge-native currency exchange, PPP, and FX analytics API. Authenticate with your API key as `Authorization: Bearer <key>`."
+  },
+  "servers": [
+    {
+      "url": "https://api.currency-core.com/{version}",
+      "description": "Production",
+      "variables": {
+        "version": {
+          "default": "v1",
+          "enum": [
+            "v1"
+          ]
+        }
+      }
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Your CurrencyCore API key, e.g. `cc_live_…`."
+      }
+    },
+    "schemas": {
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "details": {}
+            },
+            "required": [
+              "code",
+              "message"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "additionalProperties": false
+      },
+      "ConvertResponse": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "fromCountry": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "date": {
+            "type": "string"
+          },
+          "requestedDate": {
+            "type": "string"
+          },
+          "asOf": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "to": {
+                  "type": "string"
+                },
+                "toCountry": {
+                  "type": "string"
+                },
+                "result": {
+                  "type": "number"
+                },
+                "rate": {
+                  "type": "number"
+                },
+                "ppp": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "fromFactor": {
+                          "type": "number"
+                        },
+                        "toFactor": {
+                          "type": "number"
+                        },
+                        "result": {
+                          "type": "number"
+                        },
+                        "year": {
+                          "type": "number"
+                        },
+                        "source": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "fromFactor",
+                        "toFactor",
+                        "result",
+                        "year",
+                        "source"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "to",
+                "result",
+                "rate"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "from",
+          "amount",
+          "date",
+          "results"
+        ],
+        "additionalProperties": false
+      },
+      "RatesResponse": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "base": {
+            "type": "string",
+            "const": "USD"
+          },
+          "rates": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "requestedDate": {
+            "type": "string"
+          },
+          "asOf": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "date",
+          "base",
+          "rates"
+        ],
+        "additionalProperties": false
+      },
+      "RatesByBaseResponse": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "requestedDate": {
+            "type": "string"
+          },
+          "asOf": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "rates": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "ppp": {
+            "type": "object",
+            "properties": {
+              "base": {
+                "type": "string"
+              },
+              "year": {
+                "type": "number"
+              },
+              "values": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "number"
+                }
+              }
+            },
+            "required": [
+              "base",
+              "year",
+              "values"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "base",
+          "date",
+          "rates"
+        ],
+        "additionalProperties": false
+      },
+      "HistoryResponse": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string"
+          },
+          "base": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string",
+            "enum": [
+              "daily",
+              "weekly",
+              "monthly",
+              "yearly"
+            ]
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "rates": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "currency",
+          "base",
+          "interval",
+          "from",
+          "to",
+          "rates"
+        ],
+        "additionalProperties": false
+      },
+      "HistoryAnalysisResponse": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "compare",
+              "movers"
+            ]
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "strengthened",
+              "weakened"
+            ]
+          },
+          "assetClass": {
+            "type": "string",
+            "enum": [
+              "fiat",
+              "metals",
+              "all",
+              "crypto"
+            ]
+          },
+          "interval": {
+            "type": "string",
+            "enum": [
+              "daily",
+              "weekly",
+              "monthly",
+              "yearly"
+            ]
+          },
+          "stats": {
+            "type": "boolean"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "currency": {
+                  "type": "string"
+                },
+                "startDate": {
+                  "type": "string"
+                },
+                "endDate": {
+                  "type": "string"
+                },
+                "startRate": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "endRate": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "changePct": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "strengthenedPct": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "stats": {
+                  "type": "object",
+                  "properties": {
+                    "min": {
+                      "type": "number"
+                    },
+                    "max": {
+                      "type": "number"
+                    },
+                    "avg": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "min",
+                    "max",
+                    "avg"
+                  ],
+                  "additionalProperties": false
+                },
+                "series": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                "volatility": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "currency",
+                "startDate",
+                "endDate",
+                "startRate",
+                "endRate",
+                "changePct",
+                "strengthenedPct"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "base",
+          "from",
+          "to",
+          "mode",
+          "stats",
+          "results"
+        ],
+        "additionalProperties": false
+      },
+      "PppAnalysisResponse": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "number"
+          },
+          "to": {
+            "type": "number"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "compare",
+              "movers"
+            ]
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "increased",
+              "decreased"
+            ]
+          },
+          "stats": {
+            "type": "boolean"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "country": {
+                  "type": "string"
+                },
+                "startYear": {
+                  "type": "number"
+                },
+                "endYear": {
+                  "type": "number"
+                },
+                "startFactor": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "endFactor": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "changePct": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "projected": {
+                  "type": "boolean"
+                },
+                "stats": {
+                  "type": "object",
+                  "properties": {
+                    "min": {
+                      "type": "number"
+                    },
+                    "max": {
+                      "type": "number"
+                    },
+                    "avg": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "min",
+                    "max",
+                    "avg"
+                  ],
+                  "additionalProperties": false
+                },
+                "series": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "country",
+                "startYear",
+                "endYear",
+                "startFactor",
+                "endFactor",
+                "changePct",
+                "projected"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "mode",
+          "stats",
+          "results"
+        ],
+        "additionalProperties": false
+      },
+      "VolatilityResponse": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "compare",
+              "ranking"
+            ]
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "stable",
+              "volatile"
+            ]
+          },
+          "universe": {
+            "type": "string",
+            "enum": [
+              "liquid",
+              "majors"
+            ]
+          },
+          "basis": {
+            "type": "string",
+            "const": "annualized-daily"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "currency": {
+                  "type": "string"
+                },
+                "volatility": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "observations": {
+                  "type": "number"
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "currency",
+                "volatility",
+                "observations"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "base",
+          "from",
+          "to",
+          "mode",
+          "basis",
+          "results"
+        ],
+        "additionalProperties": false
+      },
+      "CorrelationResponse": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "currency": {
+                  "type": "string"
+                },
+                "correlation": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "observations": {
+                  "type": "number"
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "currency",
+                "correlation",
+                "observations"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "base",
+          "from",
+          "to",
+          "results"
+        ],
+        "additionalProperties": false
+      },
+      "DrawdownResponse": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "compare",
+              "ranking"
+            ]
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "deepest",
+              "recovery"
+            ]
+          },
+          "universe": {
+            "type": "string",
+            "enum": [
+              "liquid",
+              "majors"
+            ]
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "currency": {
+                  "type": "string"
+                },
+                "maxDrawdownPct": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "peakDate": {
+                  "type": "string"
+                },
+                "troughDate": {
+                  "type": "string"
+                },
+                "recoveryDate": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "recoveryDays": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "currency",
+                "maxDrawdownPct"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "base",
+          "from",
+          "to",
+          "mode",
+          "results"
+        ],
+        "additionalProperties": false
+      },
+      "SafeHavenResponse": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "crisis": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "from",
+              "to"
+            ],
+            "additionalProperties": false
+          },
+          "universe": {
+            "type": "string",
+            "enum": [
+              "liquid",
+              "majors"
+            ]
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "currency": {
+                  "type": "string"
+                },
+                "score": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "volatility": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maxDrawdownPct": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "crisisReturnPct": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "currency",
+                "score",
+                "volatility",
+                "maxDrawdownPct",
+                "crisisReturnPct"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "base",
+          "from",
+          "to",
+          "crisis",
+          "results"
+        ],
+        "additionalProperties": false
+      },
+      "MeanReversionResponse": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "universe": {
+            "type": "string",
+            "enum": [
+              "liquid",
+              "majors"
+            ]
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "currency": {
+                  "type": "string"
+                },
+                "score": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "deviationPct": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "reversionFrequency": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "halfLifeDays": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "currency",
+                "score",
+                "deviationPct",
+                "reversionFrequency",
+                "halfLifeDays"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "base",
+          "from",
+          "to",
+          "results"
+        ],
+        "additionalProperties": false
+      },
+      "CountriesResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "currencies": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "code",
+            "name"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "CurrenciesResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "numeric": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "symbol": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "code",
+            "numeric",
+            "name",
+            "symbol"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "AiResponse": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {}
+          },
+          "toolCalls": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "query",
+          "answer",
+          "data"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "paths": {
+    "/convert": {
+      "get": {
+        "operationId": "convert",
+        "summary": "Convert",
+        "description": "Convert an amount between currencies, optionally PPP-adjusted.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "description": "Source currency (ISO 4217), e.g. USD. For PPP (ppp=true) pair it with a country as CUR:COUNTRY, e.g. USD:USA.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "USD"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "description": "One or more target currencies, comma-separated, e.g. EUR,INR (max 25). For PPP use CUR:COUNTRY pairs, e.g. EUR:DEU,INR:IND.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "EUR,INR"
+          },
+          {
+            "name": "amount",
+            "in": "query",
+            "required": false,
+            "description": "Amount to convert. Optional, defaults to 1 (so each result equals the rate).",
+            "schema": {
+              "type": "number"
+            },
+            "example": 100
+          },
+          {
+            "name": "ppp",
+            "in": "query",
+            "required": false,
+            "description": "When true, apply a PPP adjustment. Every currency must then carry a country code.",
+            "schema": {
+              "type": "boolean"
+            },
+            "example": false
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "description": "Rate date in YYYY-MM-DD (UTC). Must not be in the future. Defaults to latest.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConvertResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or monthly quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rates": {
+      "get": {
+        "operationId": "rates",
+        "summary": "Rates",
+        "description": "The full exchange-rate snapshot for a date (USD base).",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "description": "YYYY-MM-DD. Defaults to the latest available date.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RatesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or monthly quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rates/{base}": {
+      "get": {
+        "operationId": "ratesByBase",
+        "summary": "Rates by base",
+        "description": "The same snapshot re-expressed against any base currency.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [
+          {
+            "name": "base",
+            "in": "path",
+            "required": true,
+            "description": "Base currency (3-letter ISO 4217), e.g. EUR.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "EUR"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "description": "YYYY-MM-DD. Defaults to the latest available date.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RatesByBaseResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or monthly quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history": {
+      "get": {
+        "operationId": "history",
+        "summary": "History",
+        "description": "A single currency's daily rate time series over a date range. Growth plan or higher.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [
+          {
+            "name": "currency",
+            "in": "query",
+            "required": true,
+            "description": "The currency whose history to fetch (3-letter ISO 4217), e.g. INR. One currency per call.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "INR"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Start date YYYY-MM-DD (UTC). Defaults to 7 days before `to`.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "End date YYYY-MM-DD (UTC). Defaults to today; a future date clamps to today.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "base",
+            "in": "query",
+            "required": false,
+            "description": "Base currency the rates are expressed against (3-letter ISO 4217). Defaults to USD.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "USD"
+          },
+          {
+            "name": "interval",
+            "in": "query",
+            "required": false,
+            "description": "Aggregation: daily (default), weekly, monthly, or yearly. Coarser intervals average the daily rates per bucket (weekly key = the week's Monday, monthly = YYYY-MM, yearly = YYYY).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "daily"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Requires the growth plan or higher.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or monthly quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "x-min-plan-tier": "growth"
+      }
+    },
+    "/history/analysis": {
+      "get": {
+        "operationId": "historyAnalysis",
+        "summary": "History analysis",
+        "description": "Trends, comparisons & 'movers': % change, strength, and min/max/avg over a window. Growth plan or higher.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [
+          {
+            "name": "base",
+            "in": "query",
+            "required": false,
+            "description": "Currency everything is measured against (3-letter ISO 4217). Defaults to USD.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "USD"
+          },
+          {
+            "name": "currencies",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated currencies to compare, e.g. GBP,EUR,AED. OMIT to rank ALL currencies vs base ('movers' mode).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "GBP,EUR,AED"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Window start YYYY-MM-DD (UTC). Defaults to 20 years (2 decades) before `to`. See `period` for a shorthand.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "Window end YYYY-MM-DD (UTC). Defaults to today; a future date clamps to today.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "description": "Relative window shorthand for `from`: e.g. 10y, 6m, 30d, ytd, max. Ignored if `from` is given.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "10y"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Movers ranking: strengthened (default) or weakened.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "strengthened"
+          },
+          {
+            "name": "assetClass",
+            "in": "query",
+            "required": false,
+            "description": "Movers universe: fiat (default, the liquid tradeable currencies), metals (XAU/XAG/XPT/XPD), or all (every currency incl. illiquid/frontier). fiat excludes metals/synthetics + illiquid frontier codes; redenomination artifacts are always dropped.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "fiat"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Movers: how many top results to return (default 10, max 200).",
+            "schema": {
+              "type": "number"
+            },
+            "example": 10
+          },
+          {
+            "name": "interval",
+            "in": "query",
+            "required": false,
+            "description": "Attach a trend series per named currency: weekly, monthly, or yearly (compare mode only).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "yearly"
+          },
+          {
+            "name": "stats",
+            "in": "query",
+            "required": false,
+            "description": "Include min/max/avg over the window per currency. Defaults to true; pass false to skip.",
+            "schema": {
+              "type": "boolean"
+            },
+            "example": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryAnalysisResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Requires the growth plan or higher.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or monthly quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "x-min-plan-tier": "growth"
+      }
+    },
+    "/ppp/analysis": {
+      "get": {
+        "operationId": "pppAnalysis",
+        "summary": "PPP analysis",
+        "description": "PPP over time: how a country's purchasing-power-parity factor changed, comparing countries, or 'movers'. Growth plan or higher.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [
+          {
+            "name": "countries",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated ISO 3166-1 alpha-3 country codes to compare, e.g. IND,DEU,USA. OMIT to rank ALL countries by PPP-factor change ('movers' mode).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "IND,DEU,USA"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Window start YEAR (e.g. 2015). Defaults to 10 years before `to`. See `period` for a shorthand.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "Window end YEAR (e.g. 2024). Defaults to the current year.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "description": "Relative window shorthand for `from`: e.g. 10y, 20y, max. Ignored if `from` is given.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "10y"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Movers ranking: increased (PPP factor rose most, default) or decreased.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "increased"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Movers: how many top results to return (default 10, max 200).",
+            "schema": {
+              "type": "number"
+            },
+            "example": 10
+          },
+          {
+            "name": "stats",
+            "in": "query",
+            "required": false,
+            "description": "Include min/max/avg of the PPP factor over the window per country. Defaults to true; pass false to skip.",
+            "schema": {
+              "type": "boolean"
+            },
+            "example": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PppAnalysisResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Requires the growth plan or higher.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or monthly quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "x-min-plan-tier": "growth"
+      }
+    },
+    "/volatility": {
+      "get": {
+        "operationId": "volatility",
+        "summary": "Volatility",
+        "description": "Annualized volatility of a currency vs a base, or a stability ranking of the liquid currencies. Growth plan or higher.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "description": "Currency to measure (3-letter ISO 4217), or a comma-separated list to compare. OMIT to RANK the liquid-currency set by stability.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "EUR"
+          },
+          {
+            "name": "base",
+            "in": "query",
+            "required": false,
+            "description": "Base currency to measure against (3-letter ISO 4217). Defaults to USD.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "USD"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Window start YYYY-MM-DD (UTC). Defaults to 365 days before `to`.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "Window end YYYY-MM-DD (UTC). Defaults to today; a future date clamps to today.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Ranking direction: stable (least volatile first, default) or volatile.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "stable"
+          },
+          {
+            "name": "universe",
+            "in": "query",
+            "required": false,
+            "description": "Ranking universe: liquid (default, broad set) or majors (USD/EUR/GBP/JPY/CHF/CAD/AUD/NZD). Use majors for 'most volatile major pair'.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "liquid"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Ranking: how many to return (default 10, max 50).",
+            "schema": {
+              "type": "number"
+            },
+            "example": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VolatilityResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Requires the growth plan or higher.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or monthly quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "x-min-plan-tier": "growth"
+      }
+    },
+    "/correlation": {
+      "get": {
+        "operationId": "correlation",
+        "summary": "Correlation",
+        "description": "Correlation of each currency's daily returns with a base currency's, over a window. Growth plan or higher.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [
+          {
+            "name": "base",
+            "in": "query",
+            "required": false,
+            "description": "Reference currency to correlate against (3-letter ISO 4217). Defaults to USD (a non-USD base is more meaningful).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "EUR"
+          },
+          {
+            "name": "currencies",
+            "in": "query",
+            "required": true,
+            "description": "Comma-separated currencies to correlate with `base`, e.g. GBP,CHF,SEK.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "GBP,CHF,SEK"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Window start YYYY-MM-DD (UTC). Defaults to 365 days before `to`.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "Window end YYYY-MM-DD (UTC). Defaults to today.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CorrelationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Requires the growth plan or higher.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or monthly quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "x-min-plan-tier": "growth"
+      }
+    },
+    "/drawdown": {
+      "get": {
+        "operationId": "drawdown",
+        "summary": "Drawdown",
+        "description": "Maximum peak-to-trough decline vs a base (with peak/trough/recovery), or a drawdown ranking. Growth plan or higher.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "description": "Currency to measure (3-letter ISO 4217), or a comma-separated list. OMIT to RANK the liquid set by drawdown.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "EUR"
+          },
+          {
+            "name": "base",
+            "in": "query",
+            "required": false,
+            "description": "Base currency to measure against (3-letter ISO 4217). Defaults to USD.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "USD"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Window start YYYY-MM-DD (UTC). Defaults to 365 days before `to`.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "Window end YYYY-MM-DD (UTC). Defaults to today.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Ranking direction: deepest (largest decline first, default) or recovery (fastest recovery first).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "deepest"
+          },
+          {
+            "name": "universe",
+            "in": "query",
+            "required": false,
+            "description": "Ranking universe: liquid (default) or majors.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "liquid"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Ranking: how many to return (default 10, max 50).",
+            "schema": {
+              "type": "number"
+            },
+            "example": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrawdownResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Requires the growth plan or higher.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or monthly quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "x-min-plan-tier": "growth"
+      }
+    },
+    "/safe-haven": {
+      "get": {
+        "operationId": "safeHaven",
+        "summary": "Safe haven",
+        "description": "Ranks currencies by a composite safe-haven score (low volatility + shallow drawdown + 2008-crisis resilience). Growth plan or higher.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [
+          {
+            "name": "currencies",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated currencies to score, e.g. CHF,JPY. OMIT to rank the safe-haven pool (includes gold).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "CHF,JPY"
+          },
+          {
+            "name": "base",
+            "in": "query",
+            "required": false,
+            "description": "Base currency to measure against (3-letter ISO 4217). Defaults to USD.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "USD"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Window start YYYY-MM-DD (UTC). Defaults to 2007-01-01 (spans the 2008 crisis + COVID).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "Window end YYYY-MM-DD (UTC). Defaults to today.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "How many to return (default 10, max 50).",
+            "schema": {
+              "type": "number"
+            },
+            "example": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SafeHavenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Requires the growth plan or higher.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or monthly quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "x-min-plan-tier": "growth"
+      }
+    },
+    "/mean-reversion": {
+      "get": {
+        "operationId": "meanReversion",
+        "summary": "Mean reversion",
+        "description": "Ranks currencies by how strongly they revert to their mean (crossing frequency + reversion half-life). Growth plan or higher.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [
+          {
+            "name": "currencies",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated currencies to score, e.g. EUR,GBP. OMIT to rank the liquid set.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "EUR,GBP"
+          },
+          {
+            "name": "base",
+            "in": "query",
+            "required": false,
+            "description": "Base currency to measure against (3-letter ISO 4217). Defaults to USD.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "USD"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Window start YYYY-MM-DD (UTC). Defaults to ~2 years before `to`.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "Window end YYYY-MM-DD (UTC). Defaults to today.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "How many to return (default 10, max 50).",
+            "schema": {
+              "type": "number"
+            },
+            "example": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeanReversionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Requires the growth plan or higher.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or monthly quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "x-min-plan-tier": "growth"
+      }
+    },
+    "/countries": {
+      "get": {
+        "operationId": "countries",
+        "summary": "Countries",
+        "description": "The supported countries and their official currencies. Public, no key needed.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/currencies": {
+      "get": {
+        "operationId": "currencies",
+        "summary": "Currencies",
+        "description": "The full list of supported ISO 4217 currencies. Use it to resolve a name or symbol to its code, or to check whether a currency is supported (so a missing one fails clearly, not silently). Public, no key needed.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrenciesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/ai": {
+      "get": {
+        "operationId": "ai",
+        "summary": "AI",
+        "description": "Ask a natural-language currency question; the model answers using live rates.",
+        "tags": [
+          "CurrencyCore"
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "A natural-language question, e.g. \"Convert 50 euro to indian rupees\" or \"What's the USD to EUR rate today?\".",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Convert 50 euro to indian rupees"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or monthly quota exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
