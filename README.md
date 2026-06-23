@@ -10,7 +10,7 @@ a thin `CurrencyCore.configure(...)` helper for API-key and version handling.
 ## Install (Swift Package Manager)
 
 ```swift
-.package(url: "https://github.com/currencycore/currencycore-swift.git", from: "0.1.0")
+.package(url: "https://github.com/CurrencyCore/currencycore-swift.git", from: "0.1.0")
 ```
 
 Add `"CurrencyCoreSDK"` to your target's dependencies.
