@@ -33,6 +33,37 @@ CurrencyCore.configure()
 let currencies = try await CurrencyCoreAPI.currencies()
 ```
 
+## Endpoints
+
+All 14 endpoints are static methods on `CurrencyCoreAPI` (all `async`/`throws`). `*` marks a required argument; the rest are optional. **Public** = no key; **Free** = any plan with a key; **Growth** = Growth plan or higher.
+
+| Endpoint | Call | Plan |
+| --- | --- | --- |
+| Convert an amount (optional PPP) | `CurrencyCoreAPI.convert(from*, to*, amount, ppp, date)` | Free |
+| Rate snapshot for a date (USD base) | `CurrencyCoreAPI.rates(date)` | Free |
+| Rate snapshot in any base | `CurrencyCoreAPI.ratesByBase(base*, date)` | Free |
+| One currency's daily time series | `CurrencyCoreAPI.history(currency*, from, to, base, interval)` | Growth |
+| Trends, comparisons & movers | `CurrencyCoreAPI.historyAnalysis(base, currencies, from, to, period, sort, assetClass, limit, interval, stats)` | Growth |
+| PPP factor over time / movers | `CurrencyCoreAPI.pppAnalysis(countries, from, to, period, sort, limit, stats)` | Growth |
+| Volatility or stability ranking | `CurrencyCoreAPI.volatility(currency, base, from, to, sort, universe, limit)` | Growth |
+| Return correlation vs a base | `CurrencyCoreAPI.correlation(currencies*, base, from, to)` | Growth |
+| Max drawdown or ranking | `CurrencyCoreAPI.drawdown(currency, base, from, to, sort, universe, limit)` | Growth |
+| Safe-haven score ranking | `CurrencyCoreAPI.safeHaven(currencies, base, from, to, limit)` | Growth |
+| Mean-reversion ranking | `CurrencyCoreAPI.meanReversion(currencies, base, from, to, limit)` | Growth |
+| Supported countries + currencies | `CurrencyCoreAPI.countries()` | Public |
+| Supported ISO 4217 currencies | `CurrencyCoreAPI.currencies()` | Public |
+| Natural-language question | `CurrencyCoreAPI.ai(q*)` | Free |
+
+More calls:
+
+```swift
+try await CurrencyCoreAPI.rates()                    // latest snapshot (USD base)
+try await CurrencyCoreAPI.ratesByBase(base: "EUR")   // same snapshot, EUR base
+try await CurrencyCoreAPI.history(currency: "INR", from: "2024-01-01")
+try await CurrencyCoreAPI.volatility(universe: "majors", sort: "volatile")
+try await CurrencyCoreAPI.ai(q: "How has the rupee moved this year?")
+```
+
 ## API key
 
 `CurrencyCore.configure` resolves the key as `apiKey` → `CURRENCYCORE_API_KEY`.
